@@ -83,9 +83,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 showLoading("#main-content");
 $ajaxUtils.sendGetRequest(
   allCategoriesUrl,
-  [$ajaxUtils.sendGetRequest(
-    allCategoriesUrl),
-    buildAndShowHomeHTML,], // ***** <---- TODO: STEP 1: Substitute [...] ******
+  buildAndShowHomeHTML, // ***** <---- TODO: STEP 1: Substitute [...] ******
   true); // Explicitly setting the flag to get JSON from server processed into an object literal
 });
 // *** finish **
@@ -104,6 +102,8 @@ function buildAndShowHomeHTML (categories) {
       // Pay attention to what type of data that function returns vs what the chosenCategoryShortName
       // variable's name implies it expects.
       // var chosenCategoryShortName = ....
+      var chosenCategoryShortName = chooseRandomCategory (categories).short_name;
+      
 
 
       // TODO: STEP 3: Substitute {{randomCategoryShortName}} in the home html snippet with the
@@ -117,56 +117,20 @@ function buildAndShowHomeHTML (categories) {
       // Hint: you need to surround the chosen category short name with something before inserting
       // it into the home html snippet.
       //
-      // var homeHtmlToInsertIntoMainPage = ....
+       ChatShN = "'" + chosenCategoryShortName + "'";
+       var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", ChatShN);
 
 
       // TODO: STEP 4: Insert the produced HTML in STEP 3 into the main page
       // Use the existing insertHtml function for that purpose. Look through this code for an example
       // of how to do that.
       // ....
-      // *** start ***
-// On first load, show home view
-showLoading("#main-content");
-$ajaxUtils.sendGetRequest(
-  allCategoriesUrl,
-  buildAndShowHomeHTML,
-  true); // Explicitly setting the flag to get JSON from server processed into an object literal
-});
-// *** finish **
-
-// Builds HTML for the home page based on categories array
-// returned from the server.
-function buildAndShowHomeHTML(categories) {
-
-  // Load home snippet page
-  $ajaxUtils.sendGetRequest(
-    homeHtmlUrl,
-    function (homeHtml) {
-
-      // STEP 2: Call chooseRandomCategory, passing it retrieved 'categories'
-      var chosenCategoryShortName = chooseRandomCategory(categories);
-
-      // STEP 3: Replace {{randomCategoryShortName}} in the home html snippet with the chosen category from STEP 2
-      var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", "'" + chosenCategoryShortName + "'");
-
-      // STEP 4: Insert the produced HTML in STEP 3 into the main page
       insertHtml("#main-content", homeHtmlToInsertIntoMainPage);
-    });
+
+    },
+    false
+    ); // False here because we are getting just regular HTML from the server, so no need to process JSON.
 }
-// Update the Specials tile click event handler to insert a random category short_name
-document.querySelector("#specials").addEventListener("click", function () {
-  // Generate a random index to select a category from the categories array
-  var randomIndex = Math.floor(Math.random() * categories.length);
-  // Get the short_name of the randomly selected category
-  var randomCategoryShortName = categories[randomIndex].short_name;
-  // Call the loadMenuItems function with the random category short_name
-  $dc.loadMenuItems(randomCategoryShortName);
-});
-
-
-    };
-    (false); // False here because we are getting just regular HTML from the server, so no need to process JSON.
-
 
 
 // Given array of category objects, returns a random category object.
@@ -223,42 +187,6 @@ function buildAndShowCategoriesHTML (categories) {
     false);
 }
 
-document.addEventListener("DOMContentLoaded", function (event) {
-  // On first load, show home view
-  showLoading("#main-content");
-  $ajaxUtils.sendGetRequest(
-    allCategoriesUrl,
-    buildAndShowHomeHTML, // Call the function directly without brackets
-    true); // Explicitly setting the flag to get JSON from server processed into an object literal
-});
-
-// Builds HTML for the home page based on categories array
-function buildAndShowHomeHTML(categories) {
-  // Load home snippet page
-  $ajaxUtils.sendGetRequest(
-    homeHtmlUrl,
-    function (homeHtml) {
-      // STEP 2: Call chooseRandomCategory, passing it retrieved 'categories'
-      var chosenCategory = chooseRandomCategory(categories);
-      var chosenCategoryShortName = chosenCategory.short_name;
-
-      // STEP 3: Replace {{randomCategoryShortName}} in the home html snippet with the chosen category from STEP 2
-      var homeHtmlToInsertIntoMainPage = insertProperty(homeHtml, "randomCategoryShortName", "'" + chosenCategoryShortName + "'");
-
-      // STEP 4: Insert the produced HTML in STEP 3 into the main page
-      insertHtml("#main-content", homeHtmlToInsertIntoMainPage);
-    });
-}
-
-// Update the Specials tile click event handler to insert a random category short_name
-document.querySelector("#specials").addEventListener("click", function () {
-  // Generate a random index to select a category from the categories array
-  var randomIndex = Math.floor(Math.random() * categories.length);
-  // Get the short_name of the randomly selected category
-  var randomCategoryShortName = categories[randomIndex].short_name;
-  // Call the loadMenuItems function with the random category short_name
-  $dc.loadMenuItems(randomCategoryShortName);
-});
 
 // Using categories data and snippets html
 // build categories view HTML to be inserted into page
